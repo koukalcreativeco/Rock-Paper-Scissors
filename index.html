@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="options">
+        <button id="rock" class="btn" onclick="{playGame('rock')}"><img src="rock.png" class="icon"></button>
+        <button id="paper" class="btn" onclick="{playGame('paper')}"><img src="paper.png" class="icon"></button>
+        <button id="scissors" class="btn" onclick="{playGame('scissors')}"><img src="scissors.png" class="icon"></button>
+    </div>
+
+    <div id="results">
+        <p id="choice"></p>
+        <p id="result"></p>
+       
+    </div>
+
+    <div id="score">
+       
+    </div>
+
+    <div id="reset">
+        <button id="reset-btn" onclick="{reset()}">Reset</button>
+    </div>
+
+
+    <script>
+        let score = JSON.parse(localStorage.getItem('score')) || {
+            wins: 0,
+            losses: 0,
+            ties: 0
+        };
+
+        const playGame = (playerChoice) => {
+            const computerChoice = getComputerChoice();
+            let result = '';
+            let choice = document.getElementById('choice');
+
+            if (playerChoice === computerChoice) {
+                result = `It's a tie!`;
+                score.ties++;
+            } else if (
+                (playerChoice === 'rock' && computerChoice === 'scissors') ||
+                (playerChoice === 'paper' && computerChoice === 'rock') ||
+                (playerChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                result = `You win!`;
+                score.wins++;
+            } else {
+                result = `You lost!`;
+                score.losses++;
+            }
+
+            choice.innerHTML = `You <img src="${playerChoice}.png" class="icon"> <img src="${computerChoice}.png" class="icon"> Computer`;
+            document.getElementById('result').innerHTML = result;
+            localStorage.setItem('score', JSON.stringify(score));
+            document.getElementById('score').innerHTML = `Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`;
+            
+        };
+
+        const reset = () => {
+            score = {
+                wins: 0,
+                losses: 0,
+                ties: 0
+            };
+            localStorage.removeItem('score');
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('score').innerHTML = '';
+            document.getElementById('choice').innerHTML = '';
+        }
+
+        const getComputerChoice = () => {
+            let number = Math.floor(Math.random() * 3) + 1;
+            
+            if (number === 1) {
+                return 'rock';
+            } else if (number === 2) {
+                return 'paper';
+            } else {
+                return 'scissors';
+            }
+            
+        };
+         
+
+    </script>
+</body>
+</html>
